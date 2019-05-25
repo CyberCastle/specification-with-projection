@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import th.co.geniustree.springdata.jpa.domain.Document;
 import th.co.geniustree.springdata.jpa.repository.DocumentRepository;
 import th.co.geniustree.springdata.jpa.specification.DocumentSpecs;
 
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(SpringRunner.class)
@@ -65,6 +67,23 @@ public class SpecificationExecutorProjectionTest {
         Assertions.assertThat(all).isNotEmpty();
         Assertions.assertThat(all.getContent().get(0).getParent().getId()).isEqualTo(13L);
     }
+
+    @Test
+    public void findAll_List_Unsorted() {
+        Specification<Document> where = Specification.where(null);
+        List<DocumentRepository.DocumentWithoutParent> all = documentRepository.findAll(where, DocumentRepository.DocumentWithoutParent.class);
+        Assertions.assertThat(all).isNotEmpty();
+        Assertions.assertThat(all.size()).isEqualTo(24);
+    }
+
+    @Test
+    public void findAll_List_Sorted() {
+        Specification<Document> where = Specification.where(null);
+        List<DocumentRepository.DocumentWithoutParent> all = documentRepository.findAll(where, DocumentRepository.DocumentWithoutParent.class, Sort.by(Sort.Order.desc("id")));
+        Assertions.assertThat(all).isNotEmpty();
+        Assertions.assertThat(all.get(0).getId()).isEqualTo(24L);
+    }
+
     @Test
     public void find_single_page() {
         Specification<Document> where = Specification.where(DocumentSpecs.idEq(24L));
