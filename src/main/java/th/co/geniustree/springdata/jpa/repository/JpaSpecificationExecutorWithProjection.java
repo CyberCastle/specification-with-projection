@@ -2,11 +2,13 @@ package th.co.geniustree.springdata.jpa.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.query.JpaEntityGraph;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,6 +18,10 @@ import java.util.Optional;
 public interface JpaSpecificationExecutorWithProjection<T> {
 
     <R> Optional<R> findOne(Specification<T> spec, Class<R> projectionClass);
+
+    <R> List<R> findAll(Specification<T> spec, Class<R> projectionClass);
+
+    <R> List<R> findAll(Specification<T> spec, Class<R> projectionClass, Sort sort);
 
     <R> Page<R> findAll(Specification<T> spec, Class<R> projectionClass, Pageable pageable);
 
